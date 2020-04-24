@@ -49,4 +49,4 @@ const exampleData = [
   },
 ];
 
-export default exampleData;
+module.exports = exampleData;

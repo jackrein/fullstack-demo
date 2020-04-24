@@ -1,6 +1,7 @@
 import React from 'react';
 import Nav from './Nav.jsx';
 import BugTile from './BugTile.jsx';
+import NewBug from './NewBug.jsx';
 import exampleData from '../example-data/exampleData';
 
 import '../styles/App.scss';
@@ -13,6 +14,7 @@ class App extends React.Component {
       bugs: exampleData,
     };
     this.filterHandler = this.filterHandler.bind(this);
+    this.submitBug = this.submitBug.bind(this);
   }
 
   filterHandler(filter) {
@@ -20,18 +22,26 @@ class App extends React.Component {
   }
 
   updateBugList() {
-    let filtered = exampleData.filter(bug => {
+    let filtered = this.state.bugs.filter(bug => {
       return bug.threatLevel === this.state.filter;
     });
-    this.setState({ bugs: filtered });
+    if (this.state.filter === 'None') {
+      this.setState({ bugs: exampleData });
+    } else {
+      this.setState({ bugs: filtered });
+    };  
+  }
+
+  submitBug(newBug) {
+
+    this.state.bugs.concat(newBug);
+    console.log(this.state.bugs);
   }
   
   render() {
     return (
       <table>
-        <Nav
-          filterHandler={this.filterHandler}
-        />
+        <Nav filterHandler={this.filterHandler} />
         {this.state.bugs.map((bug) => (
           <BugTile
             bugName={bug.bugName}
@@ -43,32 +53,7 @@ class App extends React.Component {
             key={bug.bugName}
           />
         ))}
-        <tbody id="newBug">
-          <tr className="bugTile">
-            <td>{this.state.bugs.length + 1}</td>
-            <td><input type="text" placeholder="Describe the problem"></input></td>
-            <td><input type="text" placeholder="Your name"></input></td>
-            <td><input type="date"></input></td>
-            <td>
-              <select>
-                <option value="None"></option>
-                <option value="Bailey">Bailey</option>
-                <option value="Daniel">Daniel</option>
-                <option value="Surj">Surj</option>
-                <option value="Teddi">Teddi</option>
-              </select>
-            </td>
-            <td>
-              <select>
-                <option value="None"></option>
-                <option value="Low-Priority">Low-Priority</option>
-                <option value="Important">Important</option>
-                <option value="Critical">Critical</option>
-              </select>
-              <button className="btn">  Submit</button>
-            </td>
-          </tr>
-        </tbody>
+        <NewBug submitBug={this.submitBug} bugs={this.state.bugs} />
       </table>
     );
   }
